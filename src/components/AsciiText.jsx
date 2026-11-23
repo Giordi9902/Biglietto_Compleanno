@@ -12,7 +12,6 @@ export default function AsciiText({ lines, label, className = '', maxFont }) {
         {lines.map((line, i) => (
           <span key={i} className="ascii-line" style={{ '--i': i }}>
             {line.padEnd(cols)}
-            {i < lines.length - 1 ? '\n' : ''}
           </span>
         ))}
       </pre>

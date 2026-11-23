@@ -1,6 +1,6 @@
 import { hash } from '../lib/math.js';
 
-const CHARS = ['*', '+', 'o', '.', '<3', 'x', '~', '*'];
+const CHARS = ['*', '+', 'o', '.', '♥', 'x', '~', '♥'];
 const COLORS = ['var(--pink)', 'var(--yellow)', 'var(--sky)', 'var(--green)', 'var(--lilac)', 'var(--rose)'];
 
 /** Coriandoli ASCII che cadono dall'alto. */

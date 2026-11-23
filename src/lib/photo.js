@@ -46,23 +46,23 @@ function frame(g, shotNumber, date, age) {
 
 function heartImage(g, text, age) {
   const cx = IMG_X + (IMG_W - 1) / 2;
-  const cy = IMG_Y + IMG_H / 2 - 0.6;
-  const s = 5.8; // righe per unità
+  const s = 6.4; // righe per unità
+  const top = IMG_Y + 0.3; // la cima dei lobi del cuore
   const fill = text.toLowerCase().replace(/\s+/g, '');
   let labelRow = null;
   for (let y = IMG_Y; y < IMG_Y + IMG_H; y++) {
     for (let x = IMG_X; x < IMG_X + IMG_W; x++) {
-      const X = (x - cx) / (2 * s);
-      const Y = -(y - cy) / s + 0.15;
-      const v = (X * X + Y * Y - 1) ** 3 - X * X * Y ** 3;
-      if (v > 0) continue;
+      const X = (x - cx) / (2.25 * s);
+      const Y = 1.26 - (y - top) / s;
+      // cuore: x² + (1.25·y − √|x|)² ≤ 1
+      if (X * X + (1.25 * Y - Math.sqrt(Math.abs(X))) ** 2 > 1) continue;
       const k = (x - IMG_X + (y - IMG_Y) * 3) % fill.length;
-      g.set(x, y, fill[k], Y > 0.35 ? C.rose : Y > -0.35 ? C.heart : C.pinkDark);
-      if (labelRow == null && Math.abs(Y - 0.3) < 0.09) labelRow = y;
+      g.set(x, y, fill[k], Y > 0.6 ? C.rose : Y > -0.1 ? C.heart : C.pinkDark);
+      if (labelRow == null && Y < 0.45) labelRow = y;
     }
   }
   const label = ` ${age} `;
-  g.text(Math.round(cx - label.length / 2) + 1, labelRow ?? Math.round(cy), label, C.yellow, true);
+  g.text(Math.round(cx - label.length / 2) + 1, labelRow ?? IMG_Y + 5, label, C.yellow, true);
 }
 
 function bannerImage(g, lines, color, caption) {

@@ -277,8 +277,11 @@ input {
   filter: drop-shadow(0 0 10px rgba(255, 92, 154, 0.25));
 }
 
+.ascii-line {
+  display: block;
+}
+
 .banner .ascii-line {
-  display: inline-block;
   background: linear-gradient(90deg, var(--pink), var(--yellow), var(--pink-strong), var(--lilac), var(--pink));
   background-size: 300% 100%;
   -webkit-background-clip: text;

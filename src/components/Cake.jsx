@@ -130,7 +130,7 @@ export default function Cake({ config, reduced, onNext }) {
         label={lit ? `Una torta con ${config.anni} candeline accese: tocca per soffiare` : 'Una torta con le candeline spente'}
         onActivate={lit ? blow : undefined}
         className="cake-canvas"
-        maxFont={16}
+        maxFont={19}
       />
 
       <div className="step-actions is-visible">
