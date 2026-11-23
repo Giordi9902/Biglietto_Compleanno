@@ -1,40 +1,26 @@
-// Generato con FIGlet (font: Slant, Script, Colossal). Rigenerabili con `npx figlet`.
+// Scritte giganti in ASCII art generate con FIGlet direttamente nel browser,
+// così cambiando il nome in src/config.js cambiano anche i titoli.
+import figlet from 'figlet';
+import colossal from 'figlet/fonts/Colossal';
+import script from 'figlet/fonts/Script';
+import slant from 'figlet/fonts/Slant';
 
-export const TANTI_AUGURI = [
-  "  ______            __  _    ___                          _",
-  " /_  __/___ _____  / /_(_)  /   | __  ______ ___  _______(_)",
-  "  / / / __ `/ __ \\/ __/ /  / /| |/ / / / __ `/ / / / ___/ /",
-  " / / / /_/ / / / / /_/ /  / ___ / /_/ / /_/ / /_/ / /  / /",
-  "/_/  \\__,_/_/ /_/\\__/_/  /_/  |_\\__,_/\\__, /\\__,_/_/  /_/",
-  "                                     /____/"
-];
+figlet.parseFont('Slant', slant);
+figlet.parseFont('Script', script);
+figlet.parseFont('Colossal', colossal);
 
-export const NAME = [
-  "  ,__ __",
-  " /|  |  |              o             o",
-  "  |  |  |   __,   ,_       __,    _      __,",
-  "  |  |  |  /  |  /  |  |  /  |  |/ \\_|  /  |",
-  "  |  |  |_/\\_/|_/   |_/|_/\\_/|_/|__/ |_/\\_/|_/",
-  "                               /|",
-  "                               \\|"
-];
+const cache = new Map();
 
-export const AGE = [
-  " .d8888b.   .d8888b.",
-  "d88P  Y88b d88P  Y88b",
-  "       888 888",
-  "     .d88P 888d888b.",
-  " .od888P\"  888P \"Y88b",
-  "d88P\"      888    888",
-  "888\"       Y88b  d88P",
-  "888888888   \"Y8888P\""
-];
+/** Restituisce le righe della scritta `text` nel font FIGlet `font`. */
+export function banner(text, font) {
+  const key = `${font}|${text}`;
+  if (!cache.has(key)) {
+    const lines = figlet.textSync(String(text), { font }).split('\n').map((l) => l.replace(/\s+$/, ''));
+    while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
+    while (lines.length && !lines[0].trim()) lines.shift();
+    cache.set(key, lines);
+  }
+  return cache.get(key);
+}
 
-export const CLICK = [
-  "   _________      __   __",
-  "  / ____/ (_)____/ /__/ /",
-  " / /   / / / ___/ //_/ /",
-  "/ /___/ / / /__/ ,< /_/",
-  "\\____/_/_/\\___/_/|_(_)"
-];
-
+export const bannerWidth = (lines) => Math.max(...lines.map((l) => l.length));
