@@ -29,7 +29,7 @@ export default function Finale({ config, reduced, onFlash, onRestart }) {
 
   const [textOn, setTextOn] = useState(reduced);
   useTimeout(() => setTextOn(true), 2300, !reduced);
-  const { shown, done, skip } = useTypewriter(config.finale.testo, { speed: 45, enabled: textOn, instant: reduced });
+  const { shown, done, skip } = useTypewriter(config.finale.testo, { speed: 38, enabled: textOn, instant: reduced });
 
   return (
     <section className="step finale">

@@ -273,10 +273,6 @@ input {
 .k-cream { color: #f3e3cf; }
 
 /* banner FIGlet: il gradiente sta su ogni riga (tutte larghe uguali) */
-.banner .ascii {
-  filter: drop-shadow(0 0 10px rgba(255, 92, 154, 0.25));
-}
-
 .ascii-line {
   display: block;
 }

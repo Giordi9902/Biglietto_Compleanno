@@ -243,7 +243,7 @@ export default function GiftQuest({ config, reduced, onFlash, onNext }) {
                   id="guess-input"
                   value={guess}
                   onChange={(e) => setGuess(e.target.value)}
-                  placeholder="scrivi qui la tua risposta…"
+                  placeholder="la tua risposta…"
                   autoComplete="off"
                   autoCapitalize="none"
                   spellCheck={false}
