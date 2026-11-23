@@ -652,6 +652,16 @@ input {
   animation: lyric-in 0.4s ease-out both;
 }
 
+.clues strong {
+  color: var(--yellow);
+}
+
+.clues .clues-word {
+  margin-top: 8px;
+  color: var(--pink);
+  letter-spacing: 0.08em;
+}
+
 .quiz-card {
   animation: lyric-in 0.45s ease-out both;
 }

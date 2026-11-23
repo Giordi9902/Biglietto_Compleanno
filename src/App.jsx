@@ -8,7 +8,7 @@ import { CONFIG } from './config.js';
 import { useReducedMotion } from './hooks.js';
 import { isMuted, setMuted, sfxShutter, unlockAudio } from './lib/audio.js';
 
-const STEPS = ['avvio', 'biglietto', 'torta', 'regalo', 'foto'];
+const STEPS = ['avvio', 'biglietto', 'torta', 'regalo', 'finale'];
 
 export default function App() {
   const reduced = useReducedMotion();

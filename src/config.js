@@ -31,64 +31,72 @@ Grazie per ogni risata, ogni abbraccio e ogni giorno passato insieme. Che questo
 
 Buon compleanno ♥`,
 
-  // Quiz: ogni risposta giusta sblocca un indizio e scopre un pezzo del regalo.
-  // `corretta` è l'indice (da 0) dell'opzione giusta.
+  // Quiz: ogni risposta giusta regala una lettera della parola segreta e
+  // gratta via un pezzo del pacco. Il regalo vero NON viene svelato: si consegna a mano.
+  // `corretta` è l'indice (da 0) dell'opzione giusta, `lettera` la lettera sbloccata.
   quiz: [
     {
-      domanda: 'Ti accompagno in viaggio, ma non sono una valigia. Torno a casa più piena di quando sono partita, ma non peso un grammo di più. Cosa porto con me?',
-      opzioni: ['Souvenir', 'Ricordi', 'Sabbia nelle scarpe', 'Calzini spaiati'],
+      domanda: 'Oggi tutti ti cantano «Tanti…»?',
+      opzioni: ['Saluti', 'Auguri', 'Complimenti', 'Bis!'],
       corretta: 1,
-      indizio: 'serve a conservare i ricordi',
+      lettera: 'A',
+      indizio: 'come Auguri',
     },
     {
-      domanda: 'Vivo di luce: senza di lei non combino niente. Quando è buio chiedo aiuto a un lampo tutto mio. Come si chiama?',
-      opzioni: ['Il fulmine', 'La torcia', 'Il flash', "L'abat-jour"],
-      corretta: 2,
-      indizio: 'ha un lampo tutto suo',
-    },
-    {
-      domanda: 'Ho un occhio solo, di vetro, e lo uso per mettere a fuoco le cose belle (tipo te). Come si chiama il mio occhio?',
-      opzioni: ["L'obiettivo", 'Il monocolo', "L'oblò", 'Il cannocchiale'],
-      corretta: 0,
-      indizio: "ha un occhio di vetro che mette a fuoco",
-    },
-    {
-      domanda: 'Quando lavoro dico sempre la stessa parolina, e tutti si mettono in posa. Che verso faccio?',
-      opzioni: ['Bip!', 'Drin!', 'Click!', 'Muuu!'],
-      corretta: 2,
-      indizio: 'fa «click!»',
-    },
-    {
-      domanda: 'Niente rullino: i miei ricordi sono fatti di milioni di puntini colorati. Come si chiamano?',
-      opzioni: ['Coriandoli', 'Pixel', 'Pois', 'Brillantini'],
+      domanda: "All'inizio del biglietto ti ho regalato una cosa che non appassirà mai. Cos'era?",
+      opzioni: ['Una pianta grassa', 'Un mazzo di fiori', 'Un orologio', 'Un pupazzo'],
       corretta: 1,
-      indizio: 'è digitale: ragiona in pixel',
+      lettera: 'M',
+      indizio: 'come Mazzo di fiori',
+    },
+    {
+      domanda: "Qual è il giorno più bello di tutto l'anno?",
+      opzioni: ['Natale', 'Ferragosto', 'Il lunedì mattina', 'Oggi'],
+      corretta: 3,
+      lettera: 'O',
+      indizio: 'come Oggi',
+    },
+    {
+      domanda: 'Nel biglietto ti ringrazio per ogni abbraccio, ogni giorno insieme e ogni…',
+      opzioni: ['Litigata', 'Messaggio vocale', 'Risata', 'Pizza (anche quella)'],
+      corretta: 2,
+      lettera: 'R',
+      indizio: 'come Risata',
+    },
+    {
+      domanda: 'Ti amo da qui fino a…',
+      opzioni: ['Domani mattina', 'Il frigorifero', "L'eternità", 'La fermata del bus'],
+      corretta: 2,
+      lettera: 'E',
+      indizio: "come Eternità",
     },
   ],
 
   rispostaGiusta: ['Esatto!', 'Brava!', 'Giusto!', 'Sì!', 'Perfetto!'],
   rispostaSbagliata: ['Acqua! 💧', 'Nope, riprova!', 'Fuochino... ma no.', 'Mmm, non proprio.', 'Quasi! (No.)'],
 
-  regalo: {
-    titolo: 'Una macchina fotografica digitale!',
-    messaggio: `Perché i tuoi ${anni} anni meritano di essere ricordati in alta definizione.
-Portala ovunque: viaggi, cene, tramonti... e qualche selfie insieme (prometto di non chiudere gli occhi).`,
-    // Se il regalo è nascosto da qualche parte, scrivilo qui (lascia '' per non mostrarlo).
-    doveTrovarlo: '',
-    suggerimento: 'Suggerimento: inizia con «macchina f…»',
-    // Parole (anche parziali, senza accenti) che contano come risposta giusta.
-    paroleGiuste: ['fotocamer', 'fotografic', 'macchinett', 'camera', 'digicam', 'reflex', 'mirrorless', 'compatta'],
-    // Risposte "quasi", controllate PRIMA di quelle giuste...
+  // Ultimo livello: mettere in fila le lettere e scrivere la parola segreta.
+  parolaSegreta: {
+    domanda: 'Ultimo livello: metti in fila le lettere. Qual è la parola segreta?',
+    // Parole (senza accenti) che contano come risposta giusta.
+    paroleGiuste: ['amore'],
+    suggerimento: 'Suggerimento: è quello che provo per te (5 lettere).',
+    // Risposte "quasi" con il loro commento.
     quasi: [
-      { parole: ['videocamer', 'webcam', 'gopro', 'go pro', 'telecamer'], risposta: 'Fuochino! Sa fare anche i video, ma il suo mestiere principale è un altro...' },
-      { parole: ['polaroid', 'istantane'], risposta: 'Quasi! Ma questa è digitale: niente foto che escono dalla fessura.' },
-      { parole: ['telefon', 'cellular', 'smartphone', 'iphone'], risposta: 'Fuochino! Il telefono ce l’hai già: questo fa una cosa sola, ma la fa benissimo.' },
+      { parole: ['roma'], risposta: 'Roma è bellissima, ma manca una lettera!' },
+      { parole: ['omero', 'morea', 'ramo', 'mare', 'more', 'oram'], risposta: 'Le lettere sono quelle, ma l’ordine no: riprova!' },
+      { parole: ['amo', 'love', 'cuore'], risposta: 'Fuochino! Il senso è giusto, ma usa le lettere sbloccate.' },
     ],
-    // ...e queste DOPO.
-    fuochino: [
-      { parole: ['macchina', 'auto'], risposta: 'Una macchina?! Magari... è molto più piccola. Ma «macchina» è un ottimo inizio.' },
-      { parole: ['foto', 'scatt', 'rullin', 'obiettiv', 'flash', 'pixel'], risposta: 'Ci sei quasi! Ma con cosa si fanno le foto?' },
-    ],
+  },
+
+  // Dopo la parola segreta: il regalo resta un mistero, si consegna a mano.
+  regalo: {
+    titolo: 'Il tuo regalo non sta qui dentro…',
+    messaggio: `…perché certe cose non si possono mandare in ASCII art.
+Alza gli occhi dallo schermo, chiudili per un attimo e tendi le mani: il regalo te lo do io, adesso. 🎁
+
+Quando l’hai scartato, torna qui: c’è un’ultima sorpresa.`,
+    bottone: '[ ho scartato il regalo! → ]',
   },
 
   finale: {

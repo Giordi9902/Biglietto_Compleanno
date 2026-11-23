@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { banner } from '../art/banners.js';
-import { sfxCorrect, sfxShutter, sfxTada, sfxWrong } from '../lib/audio.js';
-import { CAMERA_COLS, CAMERA_ROWS, drawCamera } from '../lib/camera.js';
+import { sfxCorrect, sfxTada, sfxWrong } from '../lib/audio.js';
+import { GIFT_COLS, GIFT_ROWS, drawGiftBox } from '../lib/giftbox.js';
 import AsciiCanvas from './AsciiCanvas.jsx';
 import AsciiText from './AsciiText.jsx';
 import Confetti from './Confetti.jsx';
 
 const KEYS = ['A', 'B', 'C', 'D', 'E', 'F'];
-const QUIZ_MAX_LEVEL = 0.72; // quanto si vede del regalo prima di indovinarlo
+const QUIZ_MAX_LEVEL = 0.72; // quanto si vede del pacco prima della parola segreta
 const BAR = 20;
 
 const pick = (list, n) => list[n % list.length];
@@ -30,18 +30,19 @@ function normalize(text) {
     .trim();
 }
 
-function evaluateGuess(text, regalo) {
+function evaluateGuess(text, segreta) {
   const norm = normalize(text);
   if (!norm) return { type: 'empty' };
-  const has = (words) => words.some((w) => norm.includes(w));
-  for (const group of regalo.quasi) if (has(group.parole)) return { type: 'near', text: group.risposta };
-  if (has(regalo.paroleGiuste)) return { type: 'ok' };
-  for (const group of regalo.fuochino) if (has(group.parole)) return { type: 'near', text: group.risposta };
+  const words = norm.split(' ');
+  if (segreta.paroleGiuste.some((w) => norm.includes(w))) return { type: 'ok' };
+  for (const group of segreta.quasi) {
+    if (group.parole.some((w) => words.includes(w))) return { type: 'near', text: group.risposta };
+  }
   return { type: 'ko' };
 }
 
 export default function GiftQuest({ config, reduced, onFlash, onNext }) {
-  const { quiz, regalo } = config;
+  const { quiz, regalo, parolaSegreta } = config;
   const [qi, setQi] = useState(0);
   const [wrong, setWrong] = useState([]);
   const [solved, setSolved] = useState(false);
@@ -72,9 +73,9 @@ export default function GiftQuest({ config, reduced, onFlash, onNext }) {
       const goal = targetRef.current;
       levelRef.current = reduced ? goal : levelRef.current + (goal - levelRef.current) * Math.min(1, dt * (goal >= 1 ? 3.5 : 2));
       const level = levelRef.current > 0.995 ? 1 : levelRef.current;
-      drawCamera(g, now, level, { idle: goal >= 1, age: config.anni });
+      drawGiftBox(g, now, level, { idle: goal >= 1, name: config.nome, age: config.anni });
     },
-    [reduced, config.anni],
+    [reduced, config.nome, config.anni],
   );
 
   const q = quiz[qi];
@@ -86,8 +87,8 @@ export default function GiftQuest({ config, reduced, onFlash, onNext }) {
       if (j === q.corretta) {
         sfxCorrect();
         setSolved(true);
-        setClues((c) => [...c, q.indizio]);
-        setFeedback({ type: 'ok', text: `${pick(config.rispostaGiusta, qi)} Nuovo indizio: ${q.indizio}.` });
+        setClues((c) => [...c, q]);
+        setFeedback({ type: 'ok', text: `${pick(config.rispostaGiusta, qi)} Hai sbloccato la lettera «${q.lettera}».` });
       } else {
         sfxWrong();
         setWrong((w) => [...w, j]);
@@ -129,15 +130,14 @@ export default function GiftQuest({ config, reduced, onFlash, onNext }) {
 
   const reveal = (gaveUp) => {
     setPhase('revealed');
-    setGuessFeedback(gaveUp ? { type: 'info', text: 'Va bene, te lo dico io…' } : null);
+    setGuessFeedback(gaveUp ? { type: 'info', text: 'Va bene, te lo dico io: era «amore».' } : null);
     onFlash();
-    sfxShutter();
-    setTimeout(sfxTada, 380);
+    sfxTada();
   };
 
   const submitGuess = (e) => {
     e.preventDefault();
-    const result = evaluateGuess(guess, regalo);
+    const result = evaluateGuess(guess, parolaSegreta);
     if (result.type === 'empty') return;
     if (result.type === 'ok') {
       reveal(false);
@@ -160,27 +160,27 @@ export default function GiftQuest({ config, reduced, onFlash, onNext }) {
       <header className="step-head">
         <h2 className="step-title">{phase === 'revealed' ? 'Sorpresa!' : 'Caccia al regalo'}</h2>
         <p className="step-sub">
-          {phase === 'quiz' && 'Il tuo regalo è nascosto qui sotto. Ogni risposta giusta ne gratta via un pezzetto.'}
-          {phase === 'guess' && 'Hai sbloccato tutti gli indizi. Hai capito di cosa si tratta?'}
-          {phase === 'revealed' && 'Ecco cosa si nascondeva sotto tutti quei caratteri:'}
+          {phase === 'quiz' && 'Il tuo regalo è incartato qui sotto. Ogni risposta giusta ti dà una lettera e gratta via un pezzetto di velo.'}
+          {phase === 'guess' && 'Hai tutte le lettere. Riesci a comporre la parola segreta?'}
+          {phase === 'revealed' && 'Parola segreta: corretta. Il pacco è tuo… ma non qui.'}
         </p>
       </header>
 
       <div className="gift-layout">
         <div className="gift-stage">
           {phase === 'revealed' && (
-            <AsciiText lines={banner('Click!', 'Slant')} label="Click!" className="banner banner-click" maxFont={18} />
+            <AsciiText lines={banner('Amore', 'Slant')} label="Amore" className="banner banner-click" maxFont={18} />
           )}
           <AsciiCanvas
-            cols={CAMERA_COLS}
-            rows={CAMERA_ROWS}
+            cols={GIFT_COLS}
+            rows={GIFT_ROWS}
             draw={draw}
             fps={16}
-            label={phase === 'revealed' ? 'Una macchina fotografica digitale in ASCII art' : 'Il regalo, ancora nascosto sotto un velo di caratteri'}
-            className="camera-canvas"
+            label={phase === 'revealed' ? 'Un pacco regalo incartato con un fiocco, in ASCII art' : 'Il pacco regalo, ancora nascosto sotto un velo di caratteri'}
+            className="gift-canvas"
             maxFont={16}
           />
-          <p className="meter" aria-label={`Regalo scoperto al ${percent}%`}>
+          <p className="meter" aria-label={`Pacco scoperto al ${percent}%`}>
             scoperto [<span className="meter-fill">{'#'.repeat(filled)}</span>
             {'-'.repeat(BAR - filled)}] {String(percent).padStart(3, ' ')}%
           </p>
@@ -188,12 +188,15 @@ export default function GiftQuest({ config, reduced, onFlash, onNext }) {
 
         <div className="gift-panel">
           {clues.length > 0 && (
-            <ul className="clues" aria-label="Indizi sbloccati">
+            <ul className="clues" aria-label="Lettere sbloccate">
               {clues.map((c, i) => (
                 <li key={i}>
-                  <span className="ok">✓</span> indizio #{i + 1}: {c}
+                  <span className="ok">✓</span> lettera #{i + 1}: <strong>{c.lettera}</strong> ({c.indizio})
                 </li>
               ))}
+              <li className="clues-word" aria-label="Parola segreta">
+                parola: {quiz.map((c, i) => (i < clues.length ? c.lettera : '_')).join(' ')}
+              </li>
             </ul>
           )}
 
@@ -226,7 +229,7 @@ export default function GiftQuest({ config, reduced, onFlash, onNext }) {
               </p>
               {solved && (
                 <button type="button" className="btn btn-primary" onClick={next} autoFocus>
-                  {isLast ? '[ indovina il regalo → ]' : '[ prossima domanda → ]'}
+                  {isLast ? '[ componi la parola → ]' : '[ prossima domanda → ]'}
                 </button>
               )}
             </div>
@@ -235,7 +238,7 @@ export default function GiftQuest({ config, reduced, onFlash, onNext }) {
           {phase === 'guess' && (
             <form className="guess" onSubmit={submitGuess}>
               <label htmlFor="guess-input" className="q-text">
-                Ultimo livello: allora, cos’è il regalo?
+                {parolaSegreta.domanda}
               </label>
               <div className="guess-row" ref={guessRowRef}>
                 <span className="prompt" aria-hidden="true">&gt;</span>
@@ -243,7 +246,7 @@ export default function GiftQuest({ config, reduced, onFlash, onNext }) {
                   id="guess-input"
                   value={guess}
                   onChange={(e) => setGuess(e.target.value)}
-                  placeholder="la tua risposta…"
+                  placeholder="la parola segreta…"
                   autoComplete="off"
                   autoCapitalize="none"
                   spellCheck={false}
@@ -256,7 +259,7 @@ export default function GiftQuest({ config, reduced, onFlash, onNext }) {
               <p className={`feedback${guessFeedback ? ` is-${guessFeedback.type}` : ''}`} aria-live="polite">
                 {guessFeedback?.text}
               </p>
-              {attempts >= 2 && <p className="hint">{regalo.suggerimento}</p>}
+              {attempts >= 2 && <p className="hint">{parolaSegreta.suggerimento}</p>}
               {attempts >= 3 && (
                 <button type="button" className="btn btn-ghost" onClick={() => reveal(true)}>
                   [ mi arrendo, dimmelo! ]
@@ -270,13 +273,8 @@ export default function GiftQuest({ config, reduced, onFlash, onNext }) {
               {guessFeedback && <p className="feedback is-info">{guessFeedback.text}</p>}
               <h3 className="reveal-title">{regalo.titolo}</h3>
               <p className="reveal-text">{regalo.messaggio}</p>
-              {regalo.doveTrovarlo && (
-                <p className="reveal-where">
-                  <span className="prompt">&gt;</span> dove trovarla: {regalo.doveTrovarlo}
-                </p>
-              )}
               <button type="button" className="btn btn-primary" onClick={onNext}>
-                [ 📸 scatta la prima foto → ]
+                {regalo.bottone}
               </button>
             </div>
           )}
